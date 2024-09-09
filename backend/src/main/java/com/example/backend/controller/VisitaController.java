@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/visitas")
+@CrossOrigin(origins = "http://localhost:5173")
 public class VisitaController {
 
     @Autowired
@@ -41,10 +42,9 @@ public class VisitaController {
             updatedVisita.setCliente(visitaDetails.getCliente());
             updatedVisita.setFecha(visitaDetails.getFecha());
             updatedVisita.setHora(visitaDetails.getHora());
-            updatedVisita.setDescripcion(visitaDetails.getDescripcion());
+            updatedVisita.setNotas(visitaDetails.getNotas());
             updatedVisita.setDuracion(visitaDetails.getDuracion());
             updatedVisita.setTipoVisita(visitaDetails.getTipoVisita());
-            updatedVisita.setEstado(visitaDetails.getEstado());
             return ResponseEntity.ok(visitaService.save(updatedVisita));
         } else {
             return ResponseEntity.notFound().build();

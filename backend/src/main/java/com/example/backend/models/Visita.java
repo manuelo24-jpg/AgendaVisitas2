@@ -1,6 +1,7 @@
 package com.example.backend.models;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Date;
 
@@ -10,8 +11,16 @@ public class Visita {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    public enum TipoVisita {
+        CONSULTA,
+        REVISION,
+        SEGUIMIENTO,
+        OTRO;
+    }
+
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
+    @JsonIgnore
     private Cliente cliente;
 
     @Temporal(TemporalType.DATE)
@@ -23,7 +32,7 @@ public class Visita {
     private Date hora;
 
     @Lob
-    private String descripcion;
+    private String notas;
 
     @Column(nullable = false)
     private Integer duracion;
@@ -31,24 +40,6 @@ public class Visita {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoVisita tipoVisita;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Estado estado;
-
-    public Visita() {
-    }
-
-    public Visita(Cliente cliente, Date fecha, Date hora, String descripcion, Integer duracion, TipoVisita tipoVisita,
-            Estado estado) {
-        this.cliente = cliente;
-        this.fecha = fecha;
-        this.hora = hora;
-        this.descripcion = descripcion;
-        this.duracion = duracion;
-        this.tipoVisita = tipoVisita;
-        this.estado = estado;
-    }
 
     public Long getId() {
         return id;
@@ -82,12 +73,12 @@ public class Visita {
         this.hora = hora;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getNotas() {
+        return notas;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setNotas(String notas) {
+        this.notas = notas;
     }
 
     public Integer getDuracion() {
@@ -106,20 +97,4 @@ public class Visita {
         this.tipoVisita = tipoVisita;
     }
 
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
-    }
-
-}
-
-enum TipoVisita {
-    CONSULTA, REVISION, SEGUIMIENTO, OTRO
-}
-
-enum Estado {
-    COMPLETADA, PENDIENTE, CANCELADA
 }
