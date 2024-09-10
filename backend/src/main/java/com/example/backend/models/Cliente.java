@@ -1,11 +1,11 @@
 package com.example.backend.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.Date;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Cliente {
@@ -13,15 +13,20 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 100, min = 2, message = "El nombre debe tener entre 2 y 100 caracteres")
     @Column(nullable = false, length = 100)
     private String nombre;
 
+    @Size(max = 255, message = "La dirección debe tener como máximo 255 caracteres")
     @Column(length = 255)
     private String direccion;
 
+    @Size(max = 15, message = "El teléfono debe tener como máximo 15 caracteres")
     @Column(length = 15)
     private String telefono;
 
+    @Size(max = 100, message = "El email debe tener como máximo 100 caracteres")
     @Column(length = 100)
     private String email;
 
@@ -32,12 +37,15 @@ public class Cliente {
     @Lob
     private String notas;
 
+    @Size(max = 100, message = "La ciudad debe tener como máximo 100 caracteres")
     @Column(length = 100)
     private String ciudad;
 
+    @Size(max = 100, message = "El país debe tener como máximo 100 caracteres")
     @Column(length = 100)
     private String pais;
 
+    @Size(max = 10, message = "El código postal debe tener como máximo 10 caracteres")
     @Column(length = 10)
     private String codigoPostal;
 

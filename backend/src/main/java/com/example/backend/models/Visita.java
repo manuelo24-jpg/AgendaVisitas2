@@ -1,6 +1,8 @@
 package com.example.backend.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Date;
@@ -23,10 +25,12 @@ public class Visita {
     @JsonIgnore
     private Cliente cliente;
 
+    @NotBlank(message = "La fecha es obligatoria")
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date fecha;
 
+    @NotBlank(message = "La hora es obligatoria")
     @Temporal(TemporalType.TIME)
     @Column(nullable = false)
     private Date hora;
