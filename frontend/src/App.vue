@@ -21,9 +21,7 @@
     </header>
 
     <main class="main-content">
-      <section>
-        <router-view />
-      </section>
+      <router-view />
     </main>
   </div>
 </template>
@@ -60,14 +58,14 @@ nav {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #f4f4f4; /* Fondo gris */
+  background-color: #f4f4f4;
   z-index: 1000;
 }
 
 .main-content {
   flex: 1;
-  margin-top: 80px; /* Ajusta este valor basado en la altura de tu header */
-  padding: 0; /* Elimina el padding para ajustar los espacios */
+  margin-top: 65px;
+  padding: 0;
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -94,21 +92,6 @@ nav {
   font-size: 24px;
   color: blueviolet;
   text-decoration: underline;
-}
-
-.bandera {
-  width: 165px;
-  height: 80px;
-  margin-left: 15px;
-  padding: 5px;
-}
-
-.logo {
-  display: flex;
-  justify-content: flex-end;
-  width: 130px;
-  height: 65px;
-  margin-right: 15px;
 }
 
 @media (max-width: 768px) {
