@@ -2,9 +2,12 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
 
 const clientes = ref([]);
+const clienteAEliminar = ref(null);
 const router = useRouter();
+const toast = useToast();
 
 const fetchClientes = async () => {
   try {
@@ -16,7 +19,7 @@ const fetchClientes = async () => {
 };
 
 const verDetalles = (id) => {
-  router.push(`/clientes/${id}`);
+  router.push(`/clientes/detalles/${id}`);
 };
 
 const editarCliente = (id) => {
@@ -28,7 +31,9 @@ const crearCliente = () => {
 };
 
 const confirmarEliminacion = (cliente) => {
-  clienteAEliminar.value = cliente;
+  if (!cliente.visitas || cliente.visitas.length === 0) {
+    clienteAEliminar.value = cliente;
+  }
 };
 
 const eliminarCliente = async () => {
@@ -48,6 +53,7 @@ const eliminarCliente = async () => {
 
 const cancelarEliminacion = () => {
   clienteAEliminar.value = null;
+  location.reload();
   fetchClientes(); // Recargar la lista de clientes
 };
 
@@ -77,6 +83,7 @@ onMounted(() => {
           <td>{{ cliente.email }}</td>
           <td>
             <button @click="editarCliente(cliente.id)">Editar</button>
+            <button @click="verDetalles(cliente.id)">Ver Detalles</button>
             <button
               @click="confirmarEliminacion(cliente)"
               :disabled="cliente.visitas && cliente.visitas.length > 0"
@@ -130,17 +137,9 @@ onMounted(() => {
 }
 
 .clientes-table {
-  width: 50%; /* Un poco más de la mitad de la pantalla */
-  max-height: 600px; /* Altura máxima del contenedor */
-  overflow-y: auto; /* Hacer el contenedor scrolleable */
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-table {
-  width: 100%;
+  width: 80%;
   border-collapse: collapse;
+  margin: 0 auto;
 }
 
 th,
@@ -170,10 +169,11 @@ button {
 
 button.disabled {
   opacity: 0.5;
+  background-color: #ccc;
   cursor: not-allowed;
 }
 
-button:hover {
+button:hover:not(.disabled) {
   background-color: #0056b3;
 }
 

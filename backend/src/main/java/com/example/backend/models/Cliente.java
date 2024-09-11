@@ -143,4 +143,8 @@ public class Cliente {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    public List<Visita> getVisitas() {
+        return visitas;
+    }
+
 }
