@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
@@ -44,6 +45,11 @@ public class Visita {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoVisita tipoVisita;
+
+    @JsonProperty("clienteNombre")
+    public String getClienteNombre() {
+        return cliente.getNombre();
+    }
 
     public Long getId() {
         return id;

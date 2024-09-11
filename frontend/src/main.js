@@ -3,19 +3,11 @@ import "vue3-toastify/dist/index.css";
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import Vue3Toastify from "vue3-toastify";
+import ToastPlugin from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-bootstrap.css";
 
 const app = createApp(App);
 
-app.use(Vue3Toastify, {
-  autoClose: 3000,
-  position: "top-right",
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-});
-
+app.use(ToastPlugin);
 app.use(router);
 app.mount("#app");

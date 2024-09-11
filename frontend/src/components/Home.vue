@@ -3,8 +3,8 @@
 <template>
   <div id="body">
     <div class="welcome-message">
-      <h1>Bienvenido a la gestión de la universidad de CIC</h1>
-      <p>Aqui podrás gestionar los cursos con sus respectivas asignaturas</p>
+      <h1>Bienvenido a la gestión de visitas de CIC</h1>
+      <p>Aqui podrás gestionar a los clientes con sus respectivas visitas</p>
     </div>
   </div>
 </template>

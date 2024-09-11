@@ -55,23 +55,6 @@ public class Cliente {
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Visita> visitas;
 
-    public Cliente() {
-    }
-
-    public Cliente(String nombre, String direccion, String telefono, String email, Date fechaRegistro, String notas,
-            String ciudad, String pais, String codigoPostal, Date fechaNacimiento) {
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.email = email;
-        this.fechaRegistro = fechaRegistro;
-        this.notas = notas;
-        this.ciudad = ciudad;
-        this.pais = pais;
-        this.codigoPostal = codigoPostal;
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
     public Long getId() {
         return id;
     }
@@ -158,14 +141,6 @@ public class Cliente {
 
     public void setFechaNacimiento(Date fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
-    }
-
-    public List<Visita> getVisitas() {
-        return visitas;
-    }
-
-    public void setVisitas(List<Visita> visitas) {
-        this.visitas = visitas;
     }
 
 }
