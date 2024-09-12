@@ -1,6 +1,8 @@
 package com.example.backend.controller;
 
+import com.example.backend.models.Cliente;
 import com.example.backend.models.Visita;
+import com.example.backend.service.ClienteService;
 import com.example.backend.service.VisitaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ public class VisitaController {
     @Autowired
     private VisitaService visitaService;
 
+    @Autowired
+    private ClienteService clienteService;
+
     @GetMapping
     public List<Visita> getAllVisitas() {
         return visitaService.findAll();
@@ -30,8 +35,15 @@ public class VisitaController {
     }
 
     @PostMapping
-    public Visita createVisita(@Validated @RequestBody Visita visita) {
-        return visitaService.save(visita);
+    public ResponseEntity<Visita> createVisita(@Validated @RequestBody Visita visita) {
+        Optional<Cliente> cliente = clienteService.findById(visita.getClienteId());
+        if (cliente.isPresent()) {
+            visita.setCliente(cliente.get());
+            Visita savedVisita = visitaService.save(visita);
+            return ResponseEntity.ok(savedVisita);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")
@@ -39,13 +51,18 @@ public class VisitaController {
         Optional<Visita> visita = visitaService.findById(id);
         if (visita.isPresent()) {
             Visita updatedVisita = visita.get();
-            updatedVisita.setCliente(visitaDetails.getCliente());
-            updatedVisita.setFecha(visitaDetails.getFecha());
-            updatedVisita.setHora(visitaDetails.getHora());
-            updatedVisita.setNotas(visitaDetails.getNotas());
-            updatedVisita.setDuracion(visitaDetails.getDuracion());
-            updatedVisita.setTipoVisita(visitaDetails.getTipoVisita());
-            return ResponseEntity.ok(visitaService.save(updatedVisita));
+            Optional<Cliente> cliente = clienteService.findById(visitaDetails.getClienteId());
+            if (cliente.isPresent()) {
+                updatedVisita.setCliente(cliente.get());
+                updatedVisita.setFecha(visitaDetails.getFecha());
+                updatedVisita.setHora(visitaDetails.getHora());
+                updatedVisita.setNotas(visitaDetails.getNotas());
+                updatedVisita.setDuracion(visitaDetails.getDuracion());
+                updatedVisita.setTipoVisita(visitaDetails.getTipoVisita());
+                return ResponseEntity.ok(visitaService.save(updatedVisita));
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
         } else {
             return ResponseEntity.notFound().build();
         }

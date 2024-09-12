@@ -52,7 +52,7 @@ const saveCliente = async () => {
 };
 
 const cancel = () => {
-  router.push("/lista-clientes");
+  router.back();
 };
 
 onMounted(() => {

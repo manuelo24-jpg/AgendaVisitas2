@@ -2,10 +2,13 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
 
 const visitas = ref([]);
-const router = useRouter();
+const visitaAEliminar = ref(null);
 const selectedVisita = ref(null);
+const router = useRouter();
+const toast = useToast();
 
 const fetchVisitas = async () => {
   try {
@@ -40,6 +43,28 @@ const crearVisita = () => {
   router.push("/visitas/crear");
 };
 
+const confirmarEliminacion = (visita) => {
+  visitaAEliminar.value = visita;
+};
+
+const eliminarVisita = async () => {
+  try {
+    await axios.delete(
+      `http://localhost:8080/api/visitas/${visitaAEliminar.value.id}`
+    );
+    toast.success(`Visita eliminada con éxito`);
+    visitaAEliminar.value = null;
+    fetchVisitas(); // Recargar la lista de visitas
+  } catch (error) {
+    console.error("Error eliminando visita:", error);
+    toast.error("Error al eliminar la visita");
+  }
+};
+
+const cancelarEliminacion = () => {
+  visitaAEliminar.value = null;
+};
+
 onMounted(() => {
   fetchVisitas();
 });
@@ -55,7 +80,7 @@ onMounted(() => {
         <div class="actions">
           <button @click="verDetalles(visita)">Ver Detalles</button>
           <button @click="editarVisita(visita.id)">Editar</button>
-          <button @click="eliminarVisita(visita.id)">Eliminar</button>
+          <button @click="confirmarEliminacion(visita)">Eliminar</button>
         </div>
       </div>
     </div>
@@ -69,6 +94,18 @@ onMounted(() => {
         <p>Notas: {{ selectedVisita.notas }}</p>
         <p>Duración: {{ selectedVisita.duracion }} minutos</p>
         <p>Tipo de Visita: {{ selectedVisita.tipoVisita }}</p>
+      </div>
+    </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div v-if="visitaAEliminar" class="modal-eliminacion">
+      <div class="modal-content-eliminacion">
+        <p>
+          ¿Estás seguro de que deseas eliminar la visita del cliente
+          {{ visitaAEliminar.clienteNombre }}?
+        </p>
+        <button @click="eliminarVisita">Confirmar</button>
+        <button @click="cancelarEliminacion">Cancelar</button>
       </div>
     </div>
   </div>
@@ -146,5 +183,25 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Estilos para el modal de confirmación de eliminación */
+.modal-eliminacion {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content-eliminacion {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
 }
 </style>

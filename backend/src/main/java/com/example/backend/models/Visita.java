@@ -1,11 +1,13 @@
 package com.example.backend.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -26,15 +28,19 @@ public class Visita {
     @JsonIgnore
     private Cliente cliente;
 
-    @NotBlank(message = "La fecha es obligatoria")
+    @Transient
+    @JsonProperty("clienteId")
+    private Long clienteId;
+
+    @NotNull(message = "La fecha es obligatoria")
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date fecha;
 
-    @NotBlank(message = "La hora es obligatoria")
-    @Temporal(TemporalType.TIME)
+    @NotNull(message = "La hora es obligatoria")
+    @JsonFormat(pattern = "HH:mm")
     @Column(nullable = false)
-    private Date hora;
+    private LocalTime hora;
 
     @Lob
     private String notas;
@@ -48,7 +54,15 @@ public class Visita {
 
     @JsonProperty("clienteNombre")
     public String getClienteNombre() {
-        return cliente.getNombre();
+        return cliente != null ? cliente.getNombre() : null;
+    }
+
+    public Long getClienteId() {
+        return cliente != null ? cliente.getId() : clienteId;
+    }
+
+    public void setClienteId(Long clienteId) {
+        this.clienteId = clienteId;
     }
 
     public Long getId() {
@@ -75,11 +89,11 @@ public class Visita {
         this.fecha = fecha;
     }
 
-    public Date getHora() {
+    public LocalTime getHora() {
         return hora;
     }
 
-    public void setHora(Date hora) {
+    public void setHora(LocalTime hora) {
         this.hora = hora;
     }
 
@@ -106,5 +120,4 @@ public class Visita {
     public void setTipoVisita(TipoVisita tipoVisita) {
         this.tipoVisita = tipoVisita;
     }
-
 }
