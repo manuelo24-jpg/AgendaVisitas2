@@ -89,9 +89,7 @@ const saveVisita = async () => {
         );
       } else {
         await axios.post("http://localhost:8080/api/visitas", visitaData);
-        toast.success(
-          `Visita creada correctamente para ${clienteNombre.value}`
-        );
+        toast.success(`Visita creada correctamente`);
       }
       router.go(-1); // Redirigir a la ruta anterior
     } catch (error) {
