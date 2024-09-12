@@ -18,6 +18,7 @@ const visita = ref({
 });
 const clientes = ref([]);
 const clienteNombre = ref(route.query.clienteNombre || ""); // Añadimos una variable para el nombre del cliente
+const errors = ref({}); // Estado para los errores de validación
 
 const fetchClientes = async () => {
   try {
@@ -44,31 +45,61 @@ const fetchVisita = async () => {
   }
 };
 
-const saveVisita = async () => {
-  try {
-    const visitaData = {
-      ...visita.value,
-      cliente: { id: visita.value.clienteId }, // Enviamos el ID del cliente
-    };
-    const cliente = clientes.value.find((c) => c.id === visita.value.clienteId);
-    clienteNombre.value = cliente ? cliente.nombre : ""; // Establecer el nombre del cliente
+const validateForm = () => {
+  errors.value = {};
 
-    if (route.params.id) {
-      await axios.put(
-        `http://localhost:8080/api/visitas/${route.params.id}`,
-        visitaData
+  if (!visita.value.clienteId) {
+    errors.value.clienteId = "El cliente es requerido.";
+  }
+  if (!visita.value.fecha) {
+    errors.value.fecha = "La fecha es requerida.";
+  }
+  if (!visita.value.hora) {
+    errors.value.hora = "La hora es requerida.";
+  }
+  if (!visita.value.duracion) {
+    errors.value.duracion = "La duración es requerida.";
+  }
+  if (!visita.value.tipoVisita) {
+    errors.value.tipoVisita = "El tipo de visita es requerido.";
+  }
+
+  return Object.keys(errors.value).length === 0;
+};
+
+const saveVisita = async () => {
+  if (validateForm()) {
+    try {
+      const visitaData = {
+        ...visita.value,
+        cliente: { id: visita.value.clienteId }, // Enviamos el ID del cliente
+      };
+      const cliente = clientes.value.find(
+        (c) => c.id === visita.value.clienteId
       );
-      toast.success(
-        `Visita actualizada correctamente para ${clienteNombre.value}`
-      );
-    } else {
-      await axios.post("http://localhost:8080/api/visitas", visitaData);
-      toast.success(`Visita creada correctamente para ${clienteNombre.value}`);
+      clienteNombre.value = cliente ? cliente.nombre : ""; // Establecer el nombre del cliente
+
+      if (route.params.id) {
+        await axios.put(
+          `http://localhost:8080/api/visitas/${route.params.id}`,
+          visitaData
+        );
+        toast.success(
+          `Visita actualizada correctamente para ${clienteNombre.value}`
+        );
+      } else {
+        await axios.post("http://localhost:8080/api/visitas", visitaData);
+        toast.success(
+          `Visita creada correctamente para ${clienteNombre.value}`
+        );
+      }
+      router.go(-1); // Redirigir a la ruta anterior
+    } catch (error) {
+      console.error("Error saving visita:", error);
+      toast.error("Error al guardar la visita");
     }
-    router.go(-1); // Redirigir a la ruta anterior
-  } catch (error) {
-    console.error("Error saving visita:", error);
-    toast.error("Error al guardar la visita");
+  } else {
+    toast.error("Por favor, completa todos los campos requeridos.");
   }
 };
 
@@ -102,6 +133,9 @@ onMounted(() => {
               {{ cliente.nombre }}
             </option>
           </select>
+          <span v-if="errors.clienteId" class="error">{{
+            errors.clienteId
+          }}</span>
           <p v-if="route.query.clienteNombre || clienteNombre">
             Cliente: {{ route.query.clienteNombre || clienteNombre }}
           </p>
@@ -109,10 +143,12 @@ onMounted(() => {
         <div class="form-group">
           <label for="fecha">Fecha</label>
           <input type="date" v-model="visita.fecha" required />
+          <span v-if="errors.fecha" class="error">{{ errors.fecha }}</span>
         </div>
         <div class="form-group">
           <label for="hora">Hora</label>
           <input type="time" v-model="visita.hora" required />
+          <span v-if="errors.hora" class="error">{{ errors.hora }}</span>
         </div>
         <div class="form-group">
           <label for="notas">Notas</label>
@@ -121,6 +157,9 @@ onMounted(() => {
         <div class="form-group">
           <label for="duracion">Duración (minutos)</label>
           <input type="number" v-model="visita.duracion" required />
+          <span v-if="errors.duracion" class="error">{{
+            errors.duracion
+          }}</span>
         </div>
         <div class="form-group">
           <label for="tipoVisita">Tipo de Visita</label>
@@ -130,6 +169,9 @@ onMounted(() => {
             <option value="SEGUIMIENTO">Seguimiento</option>
             <option value="OTRO">Otro</option>
           </select>
+          <span v-if="errors.tipoVisita" class="error">{{
+            errors.tipoVisita
+          }}</span>
         </div>
         <div class="form-actions">
           <button type="submit">
@@ -151,16 +193,19 @@ onMounted(() => {
 }
 
 .form-container {
-  max-width: 500px; /* Aumentamos el ancho */
+  max-width: 800px; /* Aumentamos el ancho */
   padding: 40px; /* Aumentamos el padding */
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Centramos el contenido */
 }
 
 .form-group {
   margin-bottom: 15px;
+  text-align: left; /* Alineamos las etiquetas a la izquierda */
+  width: 350px;
 }
 
 label {
@@ -174,7 +219,8 @@ textarea {
   width: 100%;
   padding: 12px; /* Aumentamos el padding */
   box-sizing: border-box;
-  border-radius: 20px; /* Hacemos los inputs circulares */
+  border-radius: 8px; /* Hacemos los inputs con bordes redondeados */
+  border: 1px solid #ddd;
 }
 
 input[type="number"] {
@@ -184,6 +230,7 @@ input[type="number"] {
 .form-actions {
   display: flex;
   justify-content: space-between;
+  margin-top: 20px; /* Añadimos un margen superior */
 }
 
 button {
@@ -191,7 +238,7 @@ button {
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 20px; /* Hacemos los botones circulares */
+  border-radius: 8px; /* Hacemos los botones con bordes redondeados */
   cursor: pointer;
 }
 
@@ -205,5 +252,12 @@ button[type="button"] {
 
 button[type="button"]:hover {
   background-color: #5a6268;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
 }
 </style>
