@@ -265,6 +265,7 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: 16px;
   justify-content: center;
+  align-items: center;
   margin-top: 10px;
 }
 
