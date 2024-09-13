@@ -159,7 +159,7 @@ onMounted(() => {
         <div class="content">
           <div class="cliente-detalles">
             <div class="cliente-card">
-              <div v-if="cliente">
+              <div v-if="cliente" class="cliente-datos">
                 <h1>{{ cliente.nombre }}</h1>
                 <p>Email: {{ cliente.email }}</p>
                 <p>Teléfono: {{ cliente.telefono }}</p>
@@ -365,13 +365,13 @@ onMounted(() => {
 }
 
 .btn {
-  padding: 8px 12px; /* Tamaño más pequeño */
+  padding: 12px; /* Tamaño más pequeño */
   border: none;
-  border-radius: 20px;
+  text-align: center;
+  border-radius: 15px;
   cursor: pointer;
   width: 70px; /* Tamaño fijo */
   color: white;
-  margin: 0 5px; /* Espacio entre botones */
 }
 
 .btn-back {
@@ -409,6 +409,10 @@ onMounted(() => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: left;
   height: 100%; /* Altura completa */
+}
+
+.cliente-datos {
+  min-width: 800px;
 }
 
 .visitas-container {
