@@ -19,6 +19,7 @@ const visita = ref({
 const clientes = ref([]);
 const clienteNombre = ref(route.query.clienteNombre || ""); // Añadimos una variable para el nombre del cliente
 const errors = ref({}); // Estado para los errores de validación
+const allowEditCliente = ref(route.query.allowEditCliente === "true"); // Control de edición del cliente
 
 const fetchClientes = async () => {
   try {
@@ -120,7 +121,7 @@ onMounted(() => {
           <label for="cliente">Cliente</label>
           <select
             v-model="visita.clienteId"
-            :disabled="!!route.query.clienteId || !!route.params.id"
+            :disabled="!allowEditCliente"
             required
           >
             <option

@@ -43,7 +43,12 @@ const cerrarModal = () => {
 };
 
 const editarVisita = (id) => {
-  router.push(`/visitas/editar/${id}`);
+  router.push({
+    path: `/visitas/editar/${id}`,
+    query: {
+      allowEditCliente: false, // No permitir editar el cliente
+    },
+  });
 };
 
 const confirmarEliminacion = (visita) => {

@@ -36,7 +36,12 @@ const cerrarModal = () => {
 };
 
 const editarVisita = (id) => {
-  router.push(`/visitas/editar/${id}`);
+  router.push({
+    path: `/visitas/editar/${id}`,
+    query: {
+      allowEditCliente: true, // Permitir editar el cliente
+    },
+  });
 };
 
 const crearVisita = () => {
