@@ -158,7 +158,7 @@ onMounted(() => {
             <button
               class="btn btn-details"
               @click="verDetalles(cliente.id)"
-              title="Ver detalles del cliente"
+              title="Ver datos del cliente"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
